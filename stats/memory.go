@@ -51,30 +51,21 @@ func getMemoryInfo() (Memory, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Contains(line, "MemTotal") {
-			mem.Total, err = parseMemNumber(line)
+			// parse fields in line and pick number only
+			total := strings.Fields(line)[1]
+			mem.Total, err = strconv.Atoi(total)
 			if err != nil {
 				return mem, err
 			}
 		} else if strings.Contains(line, "MemAvailable") {
-			mem.Available, err = parseMemNumber(line)
+			avail := strings.Fields(line)[1]
+			mem.Available, err = strconv.Atoi(avail)
 			if err != nil {
 				return mem, err
 			}
 		}
 	}
 	mem.Taken = mem.Total - mem.Available
-
 	mem.Time = time.Now().Unix() * 1000
-
 	return mem, nil
-}
-
-func parseMemNumber(line string) (int, error) {
-	str := strings.TrimSpace(strings.Split(line, ":")[1])
-	num := strings.Split(str, " ")[0]
-	number, err := strconv.Atoi(num)
-	if err != nil {
-		return -1, err
-	}
-	return number, nil
 }

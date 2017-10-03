@@ -64,7 +64,7 @@ var cpuChart = new Chart(cpu, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'Cpu consumption',
+            label: 'Cpu Load',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgb(255, 99, 132)',
             pointBorderWidth: 0,
