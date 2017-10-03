@@ -21,6 +21,9 @@ var memoryChart = new Chart(ctx, {
         }]
     },
     options: {
+        legend: {
+            display: false
+        },
         animation: false,
         scales: {
             xAxes: [{
@@ -73,6 +76,9 @@ var cpuChart = new Chart(cpu, {
         }]
     },
     options: {
+        legend: {
+            display: false
+        },
         animation: false,
         scales: {
             xAxes: [{

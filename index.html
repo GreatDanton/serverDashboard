@@ -1,16 +1,27 @@
 <!DOCTYPE HTML>
 
 <head>
-    <title> Memory consumption</title>
+    <title> Server Dashboard </title>
+    <meta name="viewport" content="width=device-width" initial-scale="1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/public/css/main.css"></link>
 </head>
 
 <body>
-    <h1>Monitoring Dashboard</h1>
-    <canvas id="memory-chart"></canvas>
-    <canvas id="cpu-chart"></canvas>
+    <h1 class="text-centered title">Server Dashboard</h1>
+    <div class="chart-container">
+        <div class="chart">
+            <h2 class="text-centered"> Memory Consumption </h2>
+            <canvas id="memory-chart"></canvas>
+        </div>
+        <div class="chart">
+            <h2 class="text-centered"> CPU load</h2>
+            <canvas id="cpu-chart"></canvas>
+        </div>
+    </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
-<script src="/js/chart.js"></script>
-<script src="/js/sockets.js"></script>
+<script src="/public/js/chart.js"></script>
+<script src="/public/js/sockets.js"></script>
 
 </html>

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/greatdanton/hardwareStats/stats"
+	"github.com/greatdanton/serverDashboard/stats"
 
 	"golang.org/x/net/websocket"
 )
@@ -18,7 +18,7 @@ func main() {
 	http.HandleFunc("/", displayDashboard)
 	http.Handle("/echo", websocket.Handler(echo))
 	http.Handle("/status", websocket.Handler(status))
-	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./js"))))
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe", err)
@@ -45,20 +45,43 @@ func echo(ws *websocket.Conn) {
 	}
 }
 
+type displayData struct {
+	Memory stats.ChartMemory
+	CPU    stats.ChartCPU
+}
+
 func status(ws *websocket.Conn) {
 	for {
 		memory, err := stats.UsedMemory()
 		if err != nil {
 			fmt.Println(err)
-			return
+			break
 		}
+		cpu1, err := stats.UsedCPU()
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		time.Sleep(time.Second * 1)
 
-		err = websocket.JSON.Send(ws, memory)
+		cpu2, err := stats.UsedCPU()
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		idleTicks := float32(cpu2.Idle - cpu1.Idle)
+		totalTicks := float32(cpu2.Total - cpu1.Total)
+		averageLoad := fmt.Sprintf("%.1f", (totalTicks-idleTicks)*100/totalTicks)
+		cpu := stats.ChartCPU{AverageLoad: averageLoad, Time: cpu2.Time}
+
+		// load data and send it via websockets
+		data := displayData{Memory: memory, CPU: cpu}
+
+		err = websocket.JSON.Send(ws, data)
 		if err != nil {
 			fmt.Println("Stats: Can't push to client:", err)
 			break
 		}
-		time.Sleep(time.Second * 1)
 	}
 }
 
